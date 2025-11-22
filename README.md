@@ -162,6 +162,91 @@ sequenceDiagram
 
 ---
 
+アーキテクチャ
+モジュール構成図
+mermaidflowchart TB
+subgraph App ["AppModule"]
+AppController
+AppService
+end
+
+    subgraph Prisma ["PrismaModule (Global)"]
+        PrismaService
+    end
+
+    subgraph CreateMod ["CreateModule"]
+        CreateController
+        CreateService
+    end
+
+    subgraph ReadMod ["ReadModule"]
+        ReadController
+        ReadService
+    end
+
+    subgraph UpdateMod ["UpdateModule"]
+        UpdateController
+        UpdateService
+    end
+
+    subgraph DeleteMod ["DeleteModule"]
+        DeleteController
+        DeleteService
+    end
+
+    App --> Prisma
+    App --> CreateMod
+    App --> ReadMod
+    App --> UpdateMod
+    App --> DeleteMod
+
+    CreateService --> PrismaService
+    ReadService --> PrismaService
+    UpdateService --> PrismaService
+    DeleteService --> PrismaService
+
+    CreateController --> CreateService
+    ReadController --> ReadService
+    UpdateController --> UpdateService
+    DeleteController --> DeleteService
+
+ファイル構成
+src/
+├── app.module.ts
+├── app.controller.ts
+├── app.service.ts
+├── main.ts
+├── prisma/
+│ ├── prisma.module.ts
+│ └── prisma.service.ts
+├── modules/
+│ ├── create/
+│ │ ├── create.module.ts
+│ │ ├── create.controller.ts
+│ │ ├── create.service.ts
+│ │ └── dto/
+│ │ └── create-task.dto.ts
+│ ├── read/
+│ │ ├── read.module.ts
+│ │ ├── read.controller.ts
+│ │ └── read.service.ts
+│ ├── update/
+│ │ ├── update.module.ts
+│ │ ├── update.controller.ts
+│ │ ├── update.service.ts
+│ │ └── dto/
+│ │ └── update-task.dto.ts
+│ └── delete/
+│ ├── delete.module.ts
+│ ├── delete.controller.ts
+│ └── delete.service.ts
+├── prisma/
+│ ├── schema.prisma
+│ └── migrations/
+└── test/
+各層の責務
+層責務ControllerHTTPリクエストの受付、レスポンスの返却Serviceビジネスロジックの実装PrismaServiceデータベースアクセスDTOデータ転送オブジェクト、バリデーション
+
 ## 技術スタック
 
 - **Backend**: NestJS
