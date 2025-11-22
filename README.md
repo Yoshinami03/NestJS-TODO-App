@@ -42,6 +42,9 @@ src/
 ├── prisma/
 │   ├── prisma.module.ts
 │   └── prisma.service.ts
+├── repositories/
+│   ├── repository.module.ts
+│   └── task.repository.ts
 ├── modules/
 │   ├── create/
 │   │   ├── create.module.ts
@@ -76,12 +79,17 @@ src/
 ```mermaid
 flowchart TB
     subgraph App ["AppModule"]
-        AppController
+        direction TB
+        AppController-->
         AppService
     end
 
     subgraph Prisma ["PrismaModule (Global)"]
         PrismaService
+    end
+
+    subgraph Repository ["RepositoryModule (Global)"]
+        TaskRepository
     end
 
     subgraph CreateMod ["CreateModule"]
@@ -104,23 +112,24 @@ flowchart TB
         DeleteService
     end
 
-    App --> Prisma
-    App --> CreateMod
-    App --> ReadMod
-    App --> UpdateMod
-    App --> DeleteMod
-    
-    PrismaService --> DB[("SQLite")]
+    AppService --> CreateMod
+    AppService --> ReadMod
+    AppService --> UpdateMod
+    AppService --> DeleteMod
 
-    CreateService --> PrismaService
-    ReadService --> PrismaService
-    UpdateService --> PrismaService
-    DeleteService --> PrismaService
+    TaskRepository --> PrismaService
+    
+    CreateService --> TaskRepository
+    ReadService --> TaskRepository
+    UpdateService --> TaskRepository
+    DeleteService --> TaskRepository
 
     CreateController --> CreateService
     ReadController --> ReadService
     UpdateController --> UpdateService
     DeleteController --> DeleteService
+
+    PrismaService --> DB[("Database")]
 ```
 
 ### 各層の責務
