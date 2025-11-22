@@ -4,6 +4,6 @@ import { DeleteController } from './delete.controller';
 
 @Module({
   providers: [DeleteService],
-  controllers: [DeleteController]
+  controllers: [DeleteController],
 })
 export class DeleteModule {}
