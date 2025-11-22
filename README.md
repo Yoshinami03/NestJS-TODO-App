@@ -84,7 +84,7 @@ flowchart TB
         AppService
     end
 
-    subgraph Prisma ["PrismaModule (Global)"]
+    subgraph Prisma ["PrismaModule"]
         PrismaService
     end
 
