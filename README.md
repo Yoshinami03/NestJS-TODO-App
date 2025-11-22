@@ -1,98 +1,168 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS TODO APP 仕様書
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 概要
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+NestJSを使用したTODOアプリケーションのCRUD機能実装
 
-## Description
+## 要件
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+CRUD機能を実装する
 
-## Project setup
+- **C (Create)**: タスクの作成
+- **R (Read)**: 作成済みタスクの一覧読み込み
+- **U (Update)**: 作成済みタスクの修正
+- **D (Delete)**: 作成済みタスクの削除
 
-```bash
-$ pnpm install
+---
+
+## 機能詳細
+
+### Create - TODOタスクの作成
+
+#### タスク要件
+
+| 項目         | 型       | 説明             |
+| ------------ | -------- | ---------------- |
+| タスク名     | `string` | タスクの名称     |
+| 開始日時     | `Date`   | タスクの開始日時 |
+| 終了日時     | `Date`   | タスクの終了日時 |
+| タスクの内容 | `string` | タスクの詳細内容 |
+
+#### 仕様
+
+- 作成したタスクはデータベースに保存する
+- 作成時にタスクID（UUID）を自動生成してDBに登録する
+
+#### シーケンス図
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant CreateTask
+    participant Header
+    participant DB
+
+    Client->>CreateTask: json
+    CreateTask->>CreateTask: createTask()
+    CreateTask->>Header: json with Name Date Content
+    CreateTask->>CreateTask: generateUuid()
+    CreateTask->>Header: Add Uuid
+    Header->>DB: json with Uuid Name Date Content
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ pnpm run start
+### Read - タスクの読み込み
 
-# watch mode
-$ pnpm run start:dev
+#### 機能
 
-# production mode
-$ pnpm run start:prod
+- 指定したIDのタスクを取得
+- データベースから一覧を読み込む（ReadOnly）
+- 表示時は締切が近い順に並べる
+
+#### 指定したタスクの取得
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Header
+    participant DB
+
+    Client->>Header: タスクのUuidでリクエスト
+    Header->>DB: Uuidで問い合わせ
+    alt Task found
+        DB->>Header: Task data
+        Header->>Client: json with Task
+    else Task not found
+        DB->>Header: Not found
+        Header->>Client: Error: Task not found
+    end
 ```
 
-## Run tests
+#### タスク一覧の取得
 
-```bash
-# unit tests
-$ pnpm run test
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Header
+    participant DB
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+    Client->>Header: Request all tasks
+    Header->>DB: Query all tasks
+    alt Tasks exist
+        DB->>Header: Return task list
+        Header->>Client: json with task list
+    else No tasks
+        DB->>Header: Return empty list
+        Header->>Client: json with empty array
+    end
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Update - タスクの更新
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### 仕様
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+- 指定したタスクをデータベースから読み込み、変更したい項目を更新できるようにする
+- フロー: Read → Update
+
+#### シーケンス図
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Header
+    participant DB
+
+    Client->>Header: json with TaskUuid and updated data
+    Header->>DB: Find task by TaskUuid
+    alt Task found
+        DB->>Header: Return existing task
+        Header->>DB: Update task with new data
+        DB->>Header: Return updated task
+        Header->>Client: json with updated task
+    else Task not found
+        DB->>Header: Task not found
+        Header->>Client: Error: Task not found
+    end
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+### Delete - タスクの削除
 
-Check out a few resources that may come in handy when working with NestJS:
+#### 仕様
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- 指定したIDのタスクを削除する
+- ~~削除時にはそのタスクの内訳を表示して確認を求めるようにする~~
+- ~~Read → Delete~~
+- ↑めんどくさくなりそうなので今回は割愛
 
-## Support
+#### シーケンス図
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Header
+    participant DB
 
-## Stay in touch
+    Client->>Header: json with TaskUuid
+    Header->>DB: Find task by TaskUuid
+    alt Task found
+        DB->>Header: Task exists
+        Header->>DB: Delete task
+        DB->>Header: Deletion successful
+        Header->>Client: Success message
+    else Task not found
+        DB->>Header: Task not found
+        Header->>Client: Error: Task not found
+    end
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 技術スタック
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Backend**: NestJS
+- **Database**: 未定
