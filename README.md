@@ -132,6 +132,7 @@ flowchart TB
     DeleteController --> DeleteService
 
     PrismaService --> DB[("Database")]
+    Request --> App
 ```
 
 #### Repository層の役割
