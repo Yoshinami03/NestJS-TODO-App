@@ -1,8 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { HealthCheckDto } from './dto/health-check.dto';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  healthCheck(): HealthCheckDto {
+    return {
+      status: 'ok',
+      message: 'TODO API is running',
+      timestamp: new Date().toISOString(),
+    };
   }
 }
