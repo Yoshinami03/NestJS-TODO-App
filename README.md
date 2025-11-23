@@ -82,11 +82,12 @@ src/
 flowchart TB
     subgraph App ["AppModule"]
         direction TB
-        AppController-->
+        AppController
         AppService
+        AppController --> AppService
     end
 
-    subgraph Prisma ["PrismaModule"]
+    subgraph Prisma ["PrismaModule (Global)"]
         PrismaService
     end
 
@@ -97,27 +98,33 @@ flowchart TB
     subgraph CreateMod ["CreateModule"]
         CreateController
         CreateService
+        CreateController --> CreateService
     end
 
     subgraph ReadMod ["ReadModule"]
         ReadController
         ReadService
+        ReadController --> ReadService
     end
 
     subgraph UpdateMod ["UpdateModule"]
         UpdateController
         UpdateService
+        UpdateController --> UpdateService
     end
 
     subgraph DeleteMod ["DeleteModule"]
         DeleteController
         DeleteService
+        DeleteController --> DeleteService
     end
 
-    AppService --> CreateMod
-    AppService --> ReadMod
-    AppService --> UpdateMod
-    AppService --> DeleteMod
+    App -.imports.-> CreateMod
+    App -.imports.-> ReadMod
+    App -.imports.-> UpdateMod
+    App -.imports.-> DeleteMod
+    App -.imports.-> Prisma
+    App -.imports.-> Repository
 
     TaskRepository --> PrismaService
 
@@ -126,13 +133,13 @@ flowchart TB
     UpdateService --> TaskRepository
     DeleteService --> TaskRepository
 
-    CreateController --> CreateService
-    ReadController --> ReadService
-    UpdateController --> UpdateService
-    DeleteController --> DeleteService
-
     PrismaService --> DB[("Database")]
-    Request --> App
+    
+    Request --> AppController
+    Request --> CreateController
+    Request --> ReadController
+    Request --> UpdateController
+    Request --> DeleteController
 ```
 
 #### Repository層の役割
