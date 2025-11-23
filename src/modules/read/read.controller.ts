@@ -1,4 +1,13 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ReadService } from './read.service';
+import { TaskDto } from 'src/dto/util.dto';
 
-@Controller('read')
-export class ReadController {}
+@Controller('tasks')
+export class ReadController {
+  constructor(private readonly readService: ReadService) {}
+
+  @Get()
+  async findAll(): Promise<TaskDto[]> {
+    return await this.readService.ReadAllTask();
+  }
+}
