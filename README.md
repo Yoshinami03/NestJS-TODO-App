@@ -1,6 +1,7 @@
 # NestJS TODO APP 仕様書
 
 ## 概要
+
 NestJSを使用したTODOアプリケーションのCRUD機能実装
 
 ## 要件
@@ -20,14 +21,15 @@ CRUD機能を実装する
 
 #### タスク要件
 
-| 項目 | 型 | 説明 |
-|------|------|------|
-| タスク名 | `string` | タスクの名称 |
-| 開始日時 | `Date` | タスクの開始日時 |
-| 終了日時 | `Date` | タスクの終了日時 |
+| 項目         | 型       | 説明             |
+| ------------ | -------- | ---------------- |
+| タスク名     | `string` | タスクの名称     |
+| 開始日時     | `Date`   | タスクの開始日時 |
+| 終了日時     | `Date`   | タスクの終了日時 |
 | タスクの内容 | `string` | タスクの詳細内容 |
 
 #### 仕様
+
 - 作成したタスクはデータベースに保存する
 - 作成時にタスクID（UUID）を自動生成してDBに登録する
 
@@ -97,7 +99,7 @@ flowchart TB
         CreateService
     end
 
-    subgraph ReadMod ["ReaddModule"]
+    subgraph ReadMod ["ReadModule"]
         ReadController
         ReadService
     end
@@ -118,7 +120,7 @@ flowchart TB
     AppService --> DeleteMod
 
     TaskRepository --> PrismaService
-    
+
     CreateService --> TaskRepository
     ReadService --> TaskRepository
     UpdateService --> TaskRepository
@@ -133,18 +135,21 @@ flowchart TB
 ```
 
 #### Repository層の役割
+
 - 基本的なCRUD操作を提供
 - `findOne()`: 1件取得（全Moduleで共通利用）
 - `findAll()`: 全件取得（基本実装）
 - `create()`, `update()`, `delete()`: 各操作の実装
 
 #### 各Moduleの役割
+
 - **CreateModule**: タスク作成のビジネスロジック（UUID生成、バリデーション）
 - **ReadModule**: タスクの全件取得のビジネスロジック（ソート、フィルタリング）
 - **UpdateModule**: タスク更新のビジネスロジック（更新前チェック）
 - **DeleteModule**: タスク削除のビジネスロジック（削除前チェック）
 
 #### 共通化の方針
+
 - データアクセスはRepository層で共通化
 - ビジネスロジックは各Moduleで独自実装
 - 依存関係: Module → Repository → Prisma → DB
@@ -153,11 +158,11 @@ flowchart TB
 
 ### 各層の責務
 
-| 層 | 責務 |
-|---|---|
-| **Controller** | HTTPリクエストの受付、レスポンスの返却 |
-| **Service** | ビジネスロジックの実装 |
-| **PrismaService** | データベースアクセス |
+| 層                | 責務                                   |
+| ----------------- | -------------------------------------- |
+| **Controller**    | HTTPリクエストの受付、レスポンスの返却 |
+| **Service**       | ビジネスロジックの実装                 |
+| **PrismaService** | データベースアクセス                   |
 
 ## 技術スタック
 
