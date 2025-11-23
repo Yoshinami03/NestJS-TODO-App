@@ -8,7 +8,7 @@ import { randomUUID } from 'crypto';
 export class CreateService {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async CreateTask(createTaskDto: CreateTaskDto): Promise<TaskDto> {
+  async createTask(createTaskDto: CreateTaskDto): Promise<TaskDto> {
     const taskId = randomUUID();
 
     return await this.taskRepository.create({

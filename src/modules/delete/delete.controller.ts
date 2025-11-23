@@ -8,6 +8,6 @@ export class DeleteController {
 
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<TaskDto> {
-    return await this.deleteService.DeleteTask(id);
+    return await this.deleteService.deleteTask(id);
   }
 }

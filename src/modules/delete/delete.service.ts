@@ -6,7 +6,7 @@ import { TaskRepository } from 'src/repository/task.repository';
 export class DeleteService {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async DeleteTask(id: string): Promise<TaskDto> {
+  async deleteTask(id: string): Promise<TaskDto> {
     return await this.taskRepository.delete(id);
   }
 }

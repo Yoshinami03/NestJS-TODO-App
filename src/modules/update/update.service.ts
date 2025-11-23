@@ -7,7 +7,7 @@ import { TaskRepository } from 'src/repository/task.repository';
 export class UpdateService {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async UpdateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<TaskDto> {
+  async updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<TaskDto> {
     return await this.taskRepository.update(id, updateTaskDto);
   }
 }

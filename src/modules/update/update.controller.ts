@@ -12,6 +12,6 @@ export class UpdateController {
     @Param('id') id: string,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<TaskDto> {
-    return await this.updateService.UpdateTask(id, updateTaskDto);
+    return await this.updateService.updateTask(id, updateTaskDto);
   }
 }

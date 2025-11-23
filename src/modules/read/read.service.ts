@@ -6,7 +6,7 @@ import { TaskRepository } from 'src/repository/task.repository';
 export class ReadService {
   constructor(private readonly taskRepository: TaskRepository) {}
 
-  async ReadAllTask(): Promise<TaskDto[]> {
+  async findAllTasks(): Promise<TaskDto[]> {
     return await this.taskRepository.readAll();
   }
 }

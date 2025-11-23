@@ -8,6 +8,6 @@ export class ReadController {
 
   @Get()
   async findAll(): Promise<TaskDto[]> {
-    return await this.readService.ReadAllTask();
+    return await this.readService.findAllTasks();
   }
 }

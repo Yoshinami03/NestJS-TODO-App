@@ -9,6 +9,6 @@ export class CreateController {
 
   @Post()
   async create(@Body() createTaskDto: CreateTaskDto): Promise<TaskDto> {
-    return await this.createService.CreateTask(createTaskDto);
+    return await this.createService.createTask(createTaskDto);
   }
 }
