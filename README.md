@@ -36,42 +36,48 @@ CRUD機能を実装する
 ### ファイル構成
 
 ```
-src/
-├── app.module.ts
-├── app.controller.ts
-├── app.service.ts
-├── main.ts
-├── prisma/
-│   ├── prisma.module.ts
-│   └── prisma.service.ts
-├── repositories/
-│   ├── repository.module.ts
-│   └── task.repository.ts
-├── modules/
-│   ├── create/
-│   │   ├── create.module.ts
-│   │   ├── create.controller.ts
-│   │   ├── create.service.ts
-│   │   └── dto/
-│   │       └── create-task.dto.ts
-│   ├── read/
-│   │   ├── read.module.ts
-│   │   ├── read.controller.ts
-│   │   └── read.service.ts
-│   ├── update/
-│   │   ├── update.module.ts
-│   │   ├── update.controller.ts
-│   │   ├── update.service.ts
-│   │   └── dto/
-│   │       └── update-task.dto.ts
-│   └── delete/
-│       ├── delete.module.ts
-│       ├── delete.controller.ts
-│       └── delete.service.ts
+nestjs-todo-app/
 ├── prisma/
 │   ├── schema.prisma
+│   ├── dev.db
 │   └── migrations/
+│       └── [migration files]
+├── src/
+│   ├── app.module.ts
+│   ├── app.controller.ts
+│   ├── app.service.ts
+│   ├── main.ts
+│   ├── dto/
+│   │   └── util.dto.ts
+│   ├── prisma/
+│   │   ├── prisma.module.ts
+│   │   └── prisma.service.ts
+│   ├── repository/
+│   │   ├── repository.module.ts
+│   │   └── task.repository.ts
+│   └── modules/
+│       ├── create/
+│       │   ├── create.module.ts
+│       │   ├── create.controller.ts
+│       │   ├── create.service.ts
+│       │   └── dto/
+│       │       └── create-task.dto.ts
+│       ├── read/
+│       │   ├── read.module.ts
+│       │   ├── read.controller.ts
+│       │   └── read.service.ts
+│       ├── update/
+│       │   ├── update.module.ts
+│       │   ├── update.controller.ts
+│       │   ├── update.service.ts
+│       │   └── dto/
+│       │       └── update-task.dto.ts
+│       └── delete/
+│           ├── delete.module.ts
+│           ├── delete.controller.ts
+│           └── delete.service.ts
 └── test/
+    └── app.e2e-spec.ts
 ```
 
 ## アーキテクチャ
