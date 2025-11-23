@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
+import { TaskRepository } from './task.repository';
 
-@Module({})
+@Global()
+@Module({
+  providers: [TaskRepository],
+  exports: [TaskRepository],
+})
 export class RepositoryModule {}
