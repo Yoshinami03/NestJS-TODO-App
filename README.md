@@ -97,7 +97,7 @@ flowchart TB
         CreateService
     end
 
-    subgraph ReadMod ["ReadModule"]
+    subgraph ReadMod ["ReaddModule"]
         ReadController
         ReadService
     end
@@ -131,6 +131,25 @@ flowchart TB
 
     PrismaService --> DB[("Database")]
 ```
+
+#### Repository層の役割
+- 基本的なCRUD操作を提供
+- `findOne()`: 1件取得（全Moduleで共通利用）
+- `findAll()`: 全件取得（基本実装）
+- `create()`, `update()`, `delete()`: 各操作の実装
+
+#### 各Moduleの役割
+- **CreateModule**: タスク作成のビジネスロジック（UUID生成、バリデーション）
+- **ReadModule**: タスクの全件取得のビジネスロジック（ソート、フィルタリング）
+- **UpdateModule**: タスク更新のビジネスロジック（更新前チェック）
+- **DeleteModule**: タスク削除のビジネスロジック（削除前チェック）
+
+#### 共通化の方針
+- データアクセスはRepository層で共通化
+- ビジネスロジックは各Moduleで独自実装
+- 依存関係: Module → Repository → Prisma → DB
+- タスク読み込みの処理は他のModuleでも利用するのでReapotitory層に実装されているものを利用する
+- タスクの全件取得の処理をReadModuleに実装する
 
 ### 各層の責務
 
