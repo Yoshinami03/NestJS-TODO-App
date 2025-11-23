@@ -173,3 +173,197 @@ flowchart TB
 - **ID生成**: UUID
 
 ---
+
+## ローカル実行手順
+
+### 1. 依存関係のインストール
+
+```bash
+pnpm install
+```
+
+### 2. Prismaクライアントの生成
+
+```bash
+npx prisma generate
+```
+
+このコマンドで、`prisma/schema.prisma`からTypeScript型定義とPrismaクライアントが生成されます。
+
+### 3. データベースの作成とマイグレーション
+
+```bash
+npx prisma migrate dev --name init
+```
+
+このコマンドで：
+- `prisma/dev.db`（SQLiteデータベースファイル）が自動作成されます
+- `Task`テーブルが作成されます
+- マイグレーションファイルが`prisma/migrations/`に保存されます
+
+### 4. アプリケーションの起動
+
+```bash
+pnpm run start:dev
+```
+
+アプリケーションが`http://localhost:3000`で起動します。
+
+### （オプション）Prisma Studioでデータベースを確認
+
+```bash
+npx prisma studio
+```
+
+ブラウザで`http://localhost:5555`が開き、データベースの内容をGUIで確認できます。
+
+### トラブルシューティング
+
+#### エラー: `Cannot find module '@prisma/client'`
+→ `npx prisma generate`を実行してください
+
+#### エラー: `Property 'task' does not exist on type 'PrismaService'`
+→ `npx prisma generate`を実行してください
+
+#### エラー: `Table 'Task' does not exist`
+→ `npx prisma migrate dev --name init`を実行してください
+
+#### データベースをリセットしたい場合
+```bash
+npx prisma migrate reset
+```
+
+---
+
+## CRUD操作のコマンド
+
+### Create - タスクの作成
+
+```bash
+curl -X POST http://localhost:3000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "テストタスク",
+    "startDate": "2024-01-01T00:00:00Z",
+    "endDate": "2024-01-31T23:59:59Z",
+    "content": "これはテストタスクです"
+  }'
+```
+
+**レスポンス例:**
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "テストタスク",
+  "startDate": "2024-01-01T00:00:00.000Z",
+  "endDate": "2024-01-31T23:59:59.000Z",
+  "content": "これはテストタスクです",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T00:00:00.000Z"
+}
+```
+
+### Read - タスク一覧の取得
+
+```bash
+curl http://localhost:3000/tasks
+```
+
+**レスポンス例:**
+```json
+[
+  {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "テストタスク",
+    "startDate": "2024-01-01T00:00:00.000Z",
+    "endDate": "2024-01-31T23:59:59.000Z",
+    "content": "これはテストタスクです",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+]
+```
+
+**特定のフィールドだけを抽出（jqを使用）:**
+```bash
+# idとnameだけを抽出
+curl http://localhost:3000/tasks | jq '[.[] | {id, name}]'
+
+# idだけを抽出
+curl http://localhost:3000/tasks | jq '.[].id'
+```
+
+### Update - タスクの更新
+
+```bash
+curl -X PUT http://localhost:3000/tasks/{タスクID} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "更新されたタスク",
+    "startDate": "2024-01-01T00:00:00Z",
+    "endDate": "2024-01-31T23:59:59Z",
+    "content": "更新された内容"
+  }'
+```
+
+**実行例:**
+```bash
+curl -X PUT http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "更新されたタスク",
+    "startDate": "2024-01-01T00:00:00Z",
+    "endDate": "2024-01-31T23:59:59Z",
+    "content": "更新された内容"
+  }'
+```
+
+**レスポンス例:**
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "更新されたタスク",
+  "startDate": "2024-01-01T00:00:00.000Z",
+  "endDate": "2024-01-31T23:59:59.000Z",
+  "content": "更新された内容",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T01:00:00.000Z"
+}
+```
+
+### Delete - タスクの削除
+
+```bash
+curl -X DELETE http://localhost:3000/tasks/{タスクID}
+```
+
+**実行例:**
+```bash
+curl -X DELETE http://localhost:3000/tasks/123e4567-e89b-12d3-a456-426614174000
+```
+
+**レスポンス例:**
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "テストタスク",
+  "startDate": "2024-01-01T00:00:00.000Z",
+  "endDate": "2024-01-31T23:59:59.000Z",
+  "content": "これはテストタスクです",
+  "createdAt": "2024-01-01T00:00:00.000Z",
+  "updatedAt": "2024-01-01T00:00:00.000Z"
+}
+```
+
+---
+
+## APIエンドポイント一覧
+
+| メソッド | エンドポイント      | 説明           |
+| -------- | ------------------- | -------------- |
+| POST     | `/tasks`            | タスクの作成   |
+| GET      | `/tasks`            | タスク一覧取得 |
+| PUT      | `/tasks/:id`        | タスクの更新   |
+| DELETE   | `/tasks/:id`        | タスクの削除   |
+
+---
